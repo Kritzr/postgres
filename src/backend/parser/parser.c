@@ -38,16 +38,17 @@ static char *str_udeescape(const char *str, char escape,
  * Returns a list of raw (un-analyzed) parse trees.  The contents of the
  * list have the form required by the specified RawParseMode.
  */
+//bison based parser -> tokenise and parse the input sql string into syntax tree  -> pg_parse_query() 
 List *
 raw_parser(const char *str, RawParseMode mode)
 {
-	core_yyscan_t yyscanner;
-	base_yy_extra_type yyextra;
-	int			yyresult;
+	core_yyscan_t yyscanner; //scanner state -> a flex object 
+	base_yy_extra_type yyextra; // this is the struct holding the context
+	int			yyresult; //final result of base_yyparse()
 
 	/* initialize the flex scanner */
 	yyscanner = scanner_init(str, &yyextra.core_yy_extra,
-							 &ScanKeywords, ScanKeywordTokens);
+							 &ScanKeywords, ScanKeywordTokens);//initialises the flex lexical scanner
 
 	/* base_yylex() only needs us to initialize the lookahead token, if any */
 	if (mode == RAW_PARSE_DEFAULT)
